@@ -34,7 +34,7 @@ The service can be stopped locally with by executing
 ## Improvements
 The Following are TODOs to for the project.
 
-###Required
+### Required
 * Define a VPC in Terraform and apply
 * Define and create the EKS Cluster to deploy this in via Terraform.
 * Write Kubernetes configuration for the pod and service
