@@ -4,4 +4,4 @@ class PingerRequestResult(object):
         self.isSuccess = isSuccess,
         self.responseTimeSeconds = responseTimeSeconds
         self.failureReason = failureReason
-        responseCode = responseCode
+        self.responseCode = responseCode
