@@ -32,10 +32,12 @@ The service can be stopped locally with by executing
     make stop
 
 ## Improvements
-The Following are identified as required imrpovements to make this project production worthy and functional
+The Following are TODOs to for the project.
 
-* Actually define a VPC and K8s Cluster to deploy this in via Terraform.
-* Write Kubernetes configuration.
+###Required
+* Define a VPC in Terraform and apply
+* Define and create the EKS Cluster to deploy this in via Terraform.
+* Write Kubernetes configuration for the pod and service
 * Move service configuration to JSON files, read them locally for development, and read configuration from the DB when not.
 * Attach a database and set up schema and migration management.
 * Add Monitoring plugins for Datadog and OpsGenie and configure them.
@@ -45,11 +47,15 @@ The Following are identified as required imrpovements to make this project produ
 * Audit logging for configuration changes and triggers.
 * Add state monitor state with the state saved in the DB or a shared cache.
 * Add leader election so backup instances can be deployed for redundancy.
+
+### Improvements and features
 * Add sharding to make horizontal scaling possible
+* Add a Datadog sidecar for container metrics
 * Add out-of-band monitors with webhooks to ensure the tests are actually running.  In other words, monitor the monitor.
 * Add a CI tool for Terraform so I'm not applying manually and integrate with Github
 * Add continuous deployment.
 * Add granular roles for monitor and plugin configuration  
+* Reduce the size of the container image.  The base image in use at present is a bit fat.  We sould be able to do better.
 
 ## Authors
 
