@@ -37,7 +37,7 @@ def runSingleTest(monitor: str):
         abort(404)
     resp, errorMsg = pingMonitors[monitor].pingUrlAndHandleErrors()
     if resp:
-        return f"It worked!  {monitor} returned!: {resp}"
+        return f"It worked!  {monitor} returned!"
     else:
         return f"Request to {monitor} failed.  Error Reason: {errorMsg}"
 
