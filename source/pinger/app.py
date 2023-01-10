@@ -15,6 +15,7 @@ app = Flask(__name__)
 pingMonitors = {
     "airtable" :  Pinger("http://airtable.com/", 60, 2, 1, [], []),
     "dataDotWorld": Pinger("http://data.world/", 300, 2, 1, [], []),
+    "foobar": Pinger("http://foo.bar", 300, 2, 1, [],[] )
 }
 
 # TODO: move this to a template
@@ -36,7 +37,7 @@ def runSingleTest(monitor: str):
         abort(404)
     resp, errorMsg = pingMonitors[monitor].pingUrlAndHandleErrors()
     if resp:
-        return f"It worked!  {monitor} returned!"
+        return f"It worked!  {monitor} returned!: {resp}"
     else:
         return f"Request to {monitor} failed.  Error Reason: {errorMsg}"
 

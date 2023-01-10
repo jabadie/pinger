@@ -48,7 +48,7 @@ class Pinger(object):
             self.handleErrorAndAlertIfNecessary(resp)
         else:
             print(f"Successful response from {self.url}")
-        return resp.isSuccess, resp.failureReason
+        return (resp.isSuccess, resp.failureReason)
 
     #  
     def reportMetricsIfNecessary(self, resp: PingerRequestResult) -> None:
