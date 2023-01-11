@@ -1,21 +1,66 @@
 import sys
 import requests
 import schedule
+import re
 from datetime import datetime
 from reporting_plugin import ReportingPlugin
 from pinger_request_result import PingerRequestResult
 
+# src: https://www.makeuseof.com/regular-expressions-validate-url/#:~:text=The%20regex%20will%20consider%20a,characters%20and%2For%20special%20characters.
+# Using a global variable with compile to make this more performant
+URL_VALIDATION_RE = re.compile('^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$')
+
+# TODO move this to tunable application settings in a UI
+# -1 means no limit, first value of the tuple is the inclusive lower limit, the second 
+PINGER_LIMITS = {
+    "intervalSeconds" : [10,-1],
+    "retryCount" : [-1, 5],
+    "failureThreshold" : [-1, -1],
+    "successThreshold" : [-1, -1],
+    "requestTimeoutSeconds": [-1, 30]
+}
+
+
 # Manages the sending of test requests and handling failures. 
 class Pinger(object):
-    def __init__(self, url: str, intervalSeconds: int, retryCount: int, failureThreshold: int, alertWebhooks: list[str], alertEmails: list[str], requestTimeoutSeconds: int=30, reportingPlugin: ReportingPlugin=None) -> None:
+    def __init__(self, url: str, intervalSeconds: int, retryCount: int, failureThreshold: int, successThreshold: int, alertWebhooks: list[str], alertEmails: list[str], requestTimeoutSeconds: int=30, reportingPlugin: ReportingPlugin=None) -> None:
         self.url = url
         self.reportingPlugin: None or ReportingPlugin = None
         self.intervalSeconds = intervalSeconds
         self.retryCount = retryCount
         self.failureThreshold = failureThreshold
+        self.successThreshold = successThreshold
         self.alertWebhooks = alertWebhooks
         self.alertEmails = alertEmails
         self.requestTimeoutSeconds = requestTimeoutSeconds
+        self.validateParameters()
+    
+    def validateParameters(self):
+        global URL_VALIDATION_RE
+        global PINGER_LIMITS
+        # We can assume the value 
+        if URL_VALIDATION_RE.match(self.url) == None:
+            tb = sys.exc_info()[2]
+            raise ValueError(f"Invalid Value given for URL to Pinger. '{self.url}' is not an URL  ").with_traceback(tb)
+
+        if self.__isValueOutOfLimits(self.retryCount, PINGER_LIMITS['retryCount']) == False:
+            tb = sys.exc_info()[2]
+            raise ValueError(f"Interval for Ping is too small.  Must be greater than  seconds. '{self.url}' monitor has an interval value of {self.intervalSeconds} seconds").with_traceback(tb)
+
+        if self.__isValueOutOfLimits(self.failureThreshold, PINGER_LIMITS['failureThreshold']) == False:
+            tb = sys.exc_info()[2]
+            raise ValueError(f"The provided Failure threshold for '{self.url}' is out of range. ").with_traceback(tb)
+
+        if self.__isValueOutOfLimits(self.requestTimeoutSeconds, PINGER_LIMITS['requestTimeoutSeconds']) == False:
+            tb = sys.exc_info()[2]
+            raise ValueError(f"Request Timeout provided for '{self.url}' is out of range.  Must be less than 30 seconds").with_traceback(tb)
+
+    def __isValueOutOfLimits(self, val: int, limits: list[int])  -> bool:
+        if limits[0] != -1 and limits[0] > val:
+            return False
+        if limits[1] != -1 and limits[1] < val:
+            return False
+        return True
     
     # Do a single get with the requests class and return the results
     def doSingleRequest(self) -> PingerRequestResult:

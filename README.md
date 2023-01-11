@@ -49,6 +49,7 @@ The Following are TODOs to for the project.
 * Add leader election so backup instances can be deployed for redundancy.
 
 ### Improvements and features
+* Integrate a local python environment with the set up process to avoid using system python
 * Add sharding to make horizontal scaling possible
 * Add a Datadog sidecar for container metrics
 * Add out-of-band monitors with webhooks to ensure the tests are actually running.  In other words, monitor the monitor.

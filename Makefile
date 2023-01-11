@@ -1,3 +1,4 @@
+
 build:
 	docker build -t pinger -f docker/Dockerfile.local  .
 
@@ -9,3 +10,7 @@ stop:
 
 clean:
 	docker image prune -a -f 
+
+test:
+	cd source/pinger
+	python3 -m unittest discover source/pinger

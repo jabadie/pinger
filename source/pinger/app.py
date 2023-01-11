@@ -13,9 +13,9 @@ app = Flask(__name__)
 
 # TODO pull this data from a DB if not running locally
 pingMonitors = {
-    "airtable" :  Pinger("http://airtable.com/", 60, 2, 1, [], []),
-    "dataDotWorld": Pinger("http://data.world/", 300, 2, 1, [], []),
-    "foobar": Pinger("http://foo.bar", 300, 2, 1, [],[] )
+    "airtable" :  Pinger("http://airtable.com/", 60, 2, 1, 1, [], []),
+    "dataDotWorld": Pinger("http://data.world/", 300, 2, 1, 1, [], []),
+    "foobar": Pinger("http://foo.bar", 300, 2, 1, 1, [],[])
 }
 
 # TODO: move this to a template
